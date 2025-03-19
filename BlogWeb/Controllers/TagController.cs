@@ -1,20 +1,23 @@
 ﻿using BlogWeb.Data;
 using BlogWeb.Models.Entities;
 using BlogWeb.Models.viewModel;
+using BlogWeb.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogWeb.Controllers
 {
     public class TagController : Controller
     {
-        private readonly BlogDbContext context;
-        public TagController(BlogDbContext _context)
+        private readonly ITag tagManager;
+
+        public TagController(ITag tagManager)
         {
-            this.context = _context;
+            this.tagManager = tagManager;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var tags=context.Tags.ToList();
+            var tags = await tagManager.GetAllAsync();
             return View(tags);
         }
         [HttpGet]
@@ -23,7 +26,7 @@ namespace BlogWeb.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Add(TagViewModel tag)
+        public async Task<IActionResult> Add(TagViewModel tag)
         {
             if (tag == null)
             { 
@@ -34,14 +37,13 @@ namespace BlogWeb.Controllers
                 Name = tag.Name,
                 DisplayName = tag.DisplayName,
             };
-            context.Tags.Add(tag1);
-            context.SaveChanges();
+            await tagManager.AddAsync(tag1);
             return RedirectToAction("Index");
         }
         [HttpGet]
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var tag = context.Tags.FirstOrDefault(x => x.Id == id);
+            var tag = await tagManager.GetByIdAsync(id);
             if(tag != null)
             {
                 return View(tag);
@@ -49,27 +51,29 @@ namespace BlogWeb.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Edit(Tag tag)
+        public async Task<IActionResult> Edit(Tag tag)
         {
-            var tag1= context.Tags.FirstOrDefault(x=>x.Id==tag.Id);
-            if (tag1 != null) { 
-                
-                tag1.Name = tag.Name;
-                tag1.DisplayName = tag.DisplayName;
-                context.SaveChanges();
+            var tag1 = await tagManager.UpdateAsync(tag);
+            if (tag1 != null)
+            {
                 return RedirectToAction("Index");
             }
+            else 
+            { 
+            
+            }
+
             return View(tag);
         }
         [HttpPost]
-        public IActionResult Delete(Tag tag)
+        public async Task<IActionResult> Delete(Tag tag)
         {
-            var tag1= context.Tags.FirstOrDefault(x=>x.Id == tag.Id);
-            if (tag1 != null) {
-             context.Tags.Remove(tag1);
-             context.SaveChanges();
-             return RedirectToAction("Index");
+            var ex_tag = await tagManager.DeleteAsync(tag.Id);
+            if (ex_tag != null)
+            {
+                return RedirectToAction("Index");
             }
+            
             return RedirectToAction("Edit", new {id=tag.Id});     
         }
     }

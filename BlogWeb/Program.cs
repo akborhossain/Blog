@@ -1,4 +1,5 @@
 using BlogWeb.Data;
+using BlogWeb.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,10 @@ builder.Services.AddControllersWithViews();
 //
 builder.Services.AddDbContext<BlogDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("BlogDbConnectionString")));
+
+builder.Services.AddScoped<ITag,TagRepo>();
+builder.Services.AddScoped<IBlogPost, BlogPostRepo>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
