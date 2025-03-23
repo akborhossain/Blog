@@ -11,7 +11,7 @@
         public string UrlHandle { get; set; }
         public DateTime PublishedDate { get; set; }
         public string CreatedBy { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public string? UpdatedBy { get; set; }
         public bool Visible { get; set; }
         public ICollection<Tag> Tags { get; set; }

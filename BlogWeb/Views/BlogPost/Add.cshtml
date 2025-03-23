@@ -66,7 +66,9 @@
 </div>
 @section Scripts {
 	<script>
-		var editor = new FroalaEditor('#content');
+		var editor = new FroalaEditor('#content',{
+			imageUploadURL:'/api/Images'
+		});
 		const featuredUploadElement = document.getElementById('featureImageUpload');
 		const featuredImageUrlElement = document.getElementById('featureImageUrl');
 		const featuredImageDisplayElement = document.getElementById('featuredImageDisplay');
