@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using BlogWeb.Models;
+using BlogWeb.Models.viewModel;
 using BlogWeb.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,19 +10,29 @@ namespace BlogWeb.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public IBlogPost BlogManager { get; }
+        private readonly IBlogPost blogManager;
 
-        public HomeController(ILogger<HomeController> logger, IBlogPost blogManager)
+        private readonly ITag tagManager;
+
+        public HomeController(ILogger<HomeController> logger,
+            IBlogPost blogManager,
+            ITag tagManager)
         {
             _logger = logger;
-            BlogManager = blogManager;
+            this.blogManager = blogManager;
+            this.tagManager = tagManager;
         }
 
         public async Task<IActionResult> Index()
         {
-            var posts = await BlogManager.GetAllAsync();
-
-            return View(posts);
+            var posts = await blogManager.GetAllAsync();
+            var tags= await tagManager.GetAllAsync();
+            var model = new HomeViewModel
+            {
+                BlogPosts = posts,
+                Tags = tags
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()
