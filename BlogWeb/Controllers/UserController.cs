@@ -8,10 +8,13 @@ namespace BlogWeb.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
 
-        public UserController(UserManager<IdentityUser> userManager)
+        public UserController(UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager)
         {
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
         public IActionResult Register()
         {
@@ -37,6 +40,28 @@ namespace BlogWeb.Controllers
             }
             return View(registerView);
             
+        }
+        [HttpGet]
+        public IActionResult Login() 
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult>Login(LogInViewModel logInViewModel)
+        {
+            var signInResult= await signInManager.PasswordSignInAsync(logInViewModel.Username, logInViewModel.Password, false, false);
+            if (signInResult != null && signInResult.Succeeded) 
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }
