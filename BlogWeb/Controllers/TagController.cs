@@ -2,11 +2,14 @@
 using BlogWeb.Models.Entities;
 using BlogWeb.Models.viewModel;
 using BlogWeb.Repository;
+using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogWeb.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class TagController : Controller
     {
         private readonly ITag tagManager;
@@ -20,6 +23,7 @@ namespace BlogWeb.Controllers
             var tags = await tagManager.GetAllAsync();
             return View(tags);
         }
+        
         [HttpGet]
         public IActionResult Add()
         {

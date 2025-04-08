@@ -26,41 +26,45 @@
 						<li class="nav-item">
 							<a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 						</li>
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								Admin
-							</a>
-							<ul class="dropdown-menu">
-								<li>
-									<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="Tag"
-									   asp-action="Add">
-										Add tag
-									</a>
-								</li>
-								<li>
-									<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="Tag"
-									   asp-action="Index">Tags</a>
-								</li>
-								<li>
-									<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="BlogPost"
-									   asp-action="Add">
-										Add Post
-									</a>
-								</li>
-								<li>
-									<a class="dropdown-item"
-									   asp-area=""
-									   asp-controller="BlogPost"
-									   asp-action="Index">Blog Posts</a>
-								</li>
-							</ul>
-						</li>
+						@if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+						{
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Admin
+								</a>
+								<ul class="dropdown-menu">
+									<li>
+										<a class="dropdown-item"
+										   asp-area=""
+										   asp-controller="Tag"
+										   asp-action="Add">
+											Add tag
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item"
+										   asp-area=""
+										   asp-controller="Tag"
+										   asp-action="Index">Tags</a>
+									</li>
+									<li>
+										<a class="dropdown-item"
+										   asp-area=""
+										   asp-controller="BlogPost"
+										   asp-action="Add">
+											Add Post
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item"
+										   asp-area=""
+										   asp-controller="BlogPost"
+										   asp-action="Index">Blog Posts</a>
+									</li>
+								</ul>
+							</li>
+						}
+
 					</ul>
 					<div class="d-flex align-items-center">
 						@if (signInManager.IsSignedIn(User))
@@ -70,7 +74,7 @@
 							</div>
 							<a class="btn me-3 bg-light text-dark"
 							   asp-area=""
-							   asp-controller="User"
+							   asp-controller="Account"
 							   asp-action="Logout"> Logout </a>
 
 						}
@@ -78,11 +82,11 @@
 						{
 							<a class="btn me-3 bg-light text-dark"
 							   asp-area=""
-							   asp-controller="User"
+							   asp-controller="Account"
 							   asp-action="Register"> Register </a>
 							<a class="btn me-3 bg-light text-dark"
 							   asp-area=""
-							   asp-controller="User"
+							   asp-controller="Account"
 							   asp-action="Login"> LogIn </a>
 						}
 

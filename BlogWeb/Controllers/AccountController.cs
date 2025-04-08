@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogWeb.Controllers
 {
-    public class UserController : Controller
+    public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
 
-        public UserController(UserManager<IdentityUser> userManager,
+        public AccountController(UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager)
         {
             this.userManager = userManager;
@@ -42,9 +42,10 @@ namespace BlogWeb.Controllers
             
         }
         [HttpGet]
-        public IActionResult Login() 
+        public IActionResult Login( string ReturnUrl) 
         {
-            return View();
+            var model = new LogInViewModel { ReturnUrl = ReturnUrl };
+            return View(model);
         }
         [HttpPost]
         public async Task<IActionResult>Login(LogInViewModel logInViewModel)
@@ -52,6 +53,10 @@ namespace BlogWeb.Controllers
             var signInResult= await signInManager.PasswordSignInAsync(logInViewModel.Username, logInViewModel.Password, false, false);
             if (signInResult != null && signInResult.Succeeded) 
             {
+                if (!string.IsNullOrWhiteSpace(logInViewModel.ReturnUrl))
+                {
+                    return Redirect(logInViewModel.ReturnUrl);
+                }
                 return RedirectToAction("Index", "Home");
             }
             return View();
@@ -62,6 +67,12 @@ namespace BlogWeb.Controllers
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }
